@@ -1,0 +1,12 @@
+version: '3'
+services:
+  strapi:
+    container_name: storage.backup
+    build: .
+    image: storage.backup:latest
+    restart: unless-stoped
+    env_file: .env
+    volumes:
+      - ./:/opt/app
+    ports:
+      - '4000:4000'
