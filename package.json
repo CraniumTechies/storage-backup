@@ -1,19 +1,8 @@
 {
-  "name": "NodeJS-Terminal-Template",
-  "description": "A Template for Nodejs Terminal Application using TypeScript",
-  "type": "module",
+  "name": "storage-backup",
+  "description": "Backup Files to a firebase storage",
   "version": "1.0.0",
-  "main": "./build/index.js",
-  "module": "./build/index.js",
-  "types": "./build/index.d.ts",
-  "exports": "./build/index.js",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/Mugambi-Ian/NodeJS-Terminal-Template---TypeScript"
-  },
-  "engines": {
-    "node": ">=14.0.0"
-  },
+  "type": "module",
   "scripts": {
     "start": "node build/index.js",
     "export": "npx tsc --build tsconfig.json",
@@ -27,16 +16,17 @@
     "watch": "tsc-watch --noClear -p ./tsconfig.json --onSuccess \"node ./build/index.js\""
   },
   "dependencies": {
+    "https": "^1.0.0",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
-    "firebase-admin": "^12.0.0",
-    "https": "^1.0.0",
-    "multer": "^1.4.5-lts.1"
+    "multer": "^1.4.5-lts.1",
+    "@google-cloud/storage": "^7.7.0"
   },
   "devDependencies": {
     "@commitlint/cli": "^17.1.2",
     "@commitlint/config-conventional": "^17.1.0",
     "@types/express": "^4.17.17",
+    "@types/multer": "^1.4.11",
     "@types/node": "^14.11.2",
     "eslint": "^8.21.0",
     "gts": "^4.0.0",

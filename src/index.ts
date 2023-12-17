@@ -1,28 +1,33 @@
 /* eslint-disable no-process-exit */
 import * as dotenv from 'dotenv';
-import express, {Request, Response} from 'express';
-import {Browser} from 'puppeteer';
-import {request_server} from './utils/types.js';
-import {loadBrowser} from './utils/helpers.js';
-import {AppReceiptHanndler} from './handlers/app.js';
+import express from 'express';
+import {AppUploadHandler} from './handlers/app.js';
+import {api_validate} from './utils/key.js';
+import {storage_cache} from './utils/file.js';
 
 dotenv.config();
 function startup() {
   const app = express();
   const {APP_PORT} = process.env;
-  let browser: Browser | void = undefined;
 
-  app.get('/receipt', (req: Request, res: Response) =>
-    request_server(req, res, AppReceiptHanndler.download)
+  app.post(
+    '/upload',
+    api_validate,
+    storage_cache().single('file'),
+    AppUploadHandler.upload
+  );
+
+  app.get(
+    '/restore',
+    api_validate,
+    AppUploadHandler.restore
   );
 
   app.listen(APP_PORT, async () => {
-    browser = await loadBrowser();
     console.log('server started at http://localhost:' + APP_PORT);
   });
 
   process.on('exit', async () => {
-    if (browser) await browser.close();
     console.log('server closed');
   });
 }

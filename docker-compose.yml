@@ -1,6 +1,6 @@
 version: '3'
 services:
-  strapi:
+  application:
     container_name: storage.backup
     build: .
     image: storage.backup:latest
@@ -9,4 +9,4 @@ services:
     volumes:
       - ./:/opt/app
     ports:
-      - '4000:4000'
+      - '9000:9000'

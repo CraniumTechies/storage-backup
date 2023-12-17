@@ -2,3 +2,5 @@ node_modules
 DS-STORE
 build
 .env
+config.json
+uploads

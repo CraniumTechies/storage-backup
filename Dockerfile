@@ -1,31 +1,34 @@
-# Install dependencies only when needed
-FROM --platform=linux/amd64 node:18  AS deps
-# Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#node20 to understand why libc6-compat might be needed.
+###############################
+# Use Node.js 20.x (alpine) as the base image for building the application
+FROM node:20-alpine AS builder
 
+# Set the working directory in the container
 WORKDIR /opt/app
-COPY package.json yarn.lock ./
+
+# Copy source code to the working directory
+COPY . .
+
+# Install dependencies
 RUN yarn
 
-FROM --platform=linux/amd64 node:18 AS runner
-
-WORKDIR /opt/app
-
-RUN apt-get update \
-    && apt-get install -y wget gnupg \
-    && apt-get update \
-    && apt-get install -y libgconf-2-4 libatk1.0-0 libatk-bridge2.0-0 libgdk-pixbuf2.0-0 libgtk-3-0 libgbm-dev libnss3-dev libxss-dev chromium fonts-ipafont-gothic fonts-wqy-zenhei fonts-thai-tlwg fonts-khmeros fonts-kacst fonts-freefont-ttf libxss1 \
-      --no-install-recommends \
-    && rm -rf /var/lib/apt/lists/* \
-    && groupadd -r pptruser && useradd -rm -g pptruser -G audio,video pptruser
-
-COPY . .
-COPY --from=deps /opt/app/node_modules ./node_modules
-RUN yarn postinstall
-
-
+# Build the TypeScript code
 RUN yarn export
 
-ENV PORT=4000
-EXPOSE 4000
+# Use a smaller base image for the final production container
+FROM node:20-alpine AS runner
 
+# Set the working directory in the container
+WORKDIR /opt/app
+
+# Copy only necessary files from the builder stage
+
+COPY --from=builder /opt/app/node_modules ./node_modules
+COPY --from=builder /opt/app/package.json ./package.json
+COPY --from=builder /opt/app/build ./build
+COPY --from=builder /opt/app/.env ./.env
+
+# Expose port 9000
+EXPOSE 9000
+
+# Command to run the application
 CMD ["yarn", "start"]

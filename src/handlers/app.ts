@@ -1,3 +1,3 @@
-import {RecieptHandler} from './receipt.js';
+import {UploadHandler} from './upload.js';
 
-export const AppReceiptHanndler = new RecieptHandler();
+export const AppUploadHandler = new UploadHandler();
